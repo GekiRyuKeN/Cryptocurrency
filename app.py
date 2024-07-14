@@ -1,6 +1,18 @@
 import streamlit as st
 import pandas as pd
 
+# Prepare data
+data = {
+    "symbol": [
+        "BTCBUSD", "ETHBUSD", "BNBBUSD", "XRPBUSD", "ADABUSD",
+        "DOGEBUSD", "SHIBBUSD", "DOTBUSD", "MATICBUSD"
+    ],
+    "weightedAvgPrice": [45000, 3500, 300, 1.2, 2.5, 0.3, 0.0005, 30, 1.5],
+    "priceChangePercent": [2.5, 1.8, 0.5, -0.3, 3.1, -1.2, 0.8, 2.0, 4.5]
+}
+
+df = pd.DataFrame(data)
+
 # Set page config
 st.set_page_config(page_icon="📈", page_title="Crypto Dashboard")
 
@@ -19,47 +31,29 @@ A simple cryptocurrency price app using local data
 
 st.header("**Selected Price**")
 
-# Load local market data (replace with your actual CSV file path)
-data_path = "cryptocurrency_data.csv"
-df = pd.read_csv(data_path)
-
-# Dictionary of cryptocurrencies to display
-crpytoList = {
-    "Price 1": "BTCBUSD",
-    "Price 2": "ETHBUSD",
-    "Price 3": "BNBBUSD",
-    "Price 4": "XRPBUSD",
-    "Price 5": "ADABUSD",
-    "Price 6": "DOGEBUSD",
-    "Price 7": "SHIBBUSD",
-    "Price 8": "DOTBUSD",
-    "Price 9": "MATICBUSD",
-}
-
 # Display metrics
 col1, col2, col3 = st.columns(3)
 
-for i, (label, symbol) in enumerate(crpytoList.items()):
-    col_df = df[df['symbol'] == symbol].iloc[0]  # Fetch row for the symbol
-    col_price = float(col_df['weightedAvgPrice'])
-    col_percent = f"{float(col_df['priceChangePercent'])}%"
+for i, row in df.iterrows():
+    col_price = row['weightedAvgPrice']
+    col_percent = f"{row['priceChangePercent']}%"
     
     if i < 3:
         with col1:
-            st.metric(label, col_price, col_percent)
+            st.metric(row['symbol'], col_price, col_percent)
     elif 2 < i < 6:
         with col2:
-            st.metric(label, col_price, col_percent)
+            st.metric(row['symbol'], col_price, col_percent)
     else:
         with col3:
-            st.metric(label, col_price, col_percent)
+            st.metric(row['symbol'], col_price, col_percent)
 
 st.header("")
 
 # Download button for CSV
 @st.cache
 def convert_df(df):
-    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    # Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode("utf-8")
 
 csv = convert_df(df)
