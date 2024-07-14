@@ -16,7 +16,8 @@ def fetch_data(url):
         except urllib.error.HTTPError as e:
             st.warning(f"Retry {retries + 1} failed: HTTP Error {e.code} - {e.reason}")
             retries += 1
-            time.sleep(1)  # Wait for 1 second before retrying
+            if retries < MAX_RETRIES:
+                time.sleep(1)  # Wait for 1 second before retrying
     else:
         st.error("Failed to fetch data after multiple retries. Please try again later.")
         return None
