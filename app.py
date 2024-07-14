@@ -27,7 +27,7 @@ if button_selection == "Show Metrics":
     # Display metrics
     st.markdown(
         """# **Crypto Dashboard**
-    A simple cryptocurrency price app using local data
+    A simple cryptocurrency price app using Binance API
     """
     )
 
